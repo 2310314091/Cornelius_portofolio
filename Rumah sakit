@@ -1,0 +1,204 @@
+#include <iostream> 
+#include <vector> 
+#include <algorithm> 
+#include <cstdlib> // For rand() and srand() 
+#include <ctime>   // For time() 
+using namespace std; 
+ 
+int calculateRoomCost(int kelas, int jmlhari) { 
+    int hargaKamar; 
+    if (kelas == 1) { 
+        hargaKamar = 500000; // Regular 
+    } else if (kelas == 2) { 
+        hargaKamar = 1000000; // VIP 
+    } else if (kelas == 3) { 
+        hargaKamar = 1500000; // VVIP 
+    } 
+    return hargaKamar * jmlhari; 
+} 
+ 
+int calculateDiseaseCost(int nopenyakit) { 
+    int hrgpenyakit = 0; 
+    if (nopenyakit == 1) { 
+        hrgpenyakit = rand() % 100001; // 0 to 100000 
+    } else if (nopenyakit == 2) { 
+        hrgpenyakit = 100000 + rand() % 300001; // 100000 to 400000 
+    } else if (nopenyakit == 3) { 
+        hrgpenyakit = 500000 + rand() % 1000001; // 500000 and above 
+    }
+   return hrgpenyakit; 
+   } 
+struct Room { 
+    string name; 
+    bool occupied; 
+    string disease; 
+    int kelas; 
+    int roomCost; 
+ 
+    Room(string n, int k) : name(n), occupied(false), disease(""), kelas(k), roomCost(0) {} 
+ 
+    void occupyRoom(const string& dis, int cost) { 
+        occupied = true; 
+        disease = dis; 
+        roomCost = cost; 
+    } 
+ 
+    void releaseRoom() { 
+        occupied = false; 
+        disease = ""; 
+        roomCost = 0; 
+    } 
+}; 
+void displayOccupiedRooms(const vector<Room>& rooms) { 
+    cout << "\nDaftar ruangan yang terisi:\n"; 
+    bool found = false; 
+    for (const auto& room : rooms) { 
+        if (room.occupied) { 
+cout << room.name << " - Penyakit: " << room.disease << " - Kelas: " << 
+room.kelas << " - Harga Kamar: " << room.roomCost << endl;  
+found = true;
+} 
+    } 
+    if (!found) { 
+        cout << "Tidak ada ruangan yang terisi saat ini.\n"; 
+    } 
+} 
+ 
+void searchRoomOccupancy(const vector<Room>& rooms) { 
+    cout << "\nDaftar ruangan yang terisi:\n"; 
+    bool found = false; 
+    for (const auto& room : rooms) { 
+        if (room.occupied) { 
+            cout << room.name << " - Penyakit: " << room.disease << endl; 
+            found = true; 
+        } 
+    } 
+    if (!found) { 
+        cout << "Tidak ada ruangan yang terisi saat ini.\n"; 
+    } 
+} 
+void searchEmptyRooms(const vector<Room>& rooms) { 
+    cout << "\nDaftar ruangan yang kosong:\n"; 
+    bool found = false; 
+    for (const auto& room : rooms) { 
+        if (!room.occupied) { 
+            cout << room.name << endl; 
+            found = true; 
+        } 
+    }
+   if (!found) { 
+        cout << "Tidak ada ruangan yang kosong saat ini.\n"; 
+    } 
+} 
+void sortRoomsByCost(vector<Room>& rooms) { 
+    sort(rooms.begin(), rooms.end(), [](const Room& a, const Room& b) { 
+        return a.roomCost > b.roomCost; 
+    }); 
+} 
+int main() { 
+    srand(time(0)); // Seed the random number generator 
+ 
+    vector<Room> rooms = { 
+        {"FLAMBOYAN 1", 1}, {"FLAMBOYAN 2", 1}, {"FLAMBOYAN 3", 1}, {"FLAMBOYAN 4", 
+1}, {"FLAMBOYAN 5", 1}, 
+        {"FLAMBOYAN 6", 1}, {"FLAMBOYAN 7", 1}, {"FLAMBOYAN 8", 1}, {"ARJUNA 1", 2}, 
+{"ARJUNA 2", 2}, 
+        {"ARJUNA 3", 2}, {"ARJUNA 4", 2}, {"ARJUNA 5", 2}, {"ARJUNA 6", 2}, {"ARJUNA 7", 
+2}, {"ARJUNA 8", 2}, 
+        {"BIMA 1", 3}, {"BIMA 2", 3}, {"BIMA 3", 3}, {"BIMA 4", 3}, {"BIMA 5", 3}, {"BIMA 6", 
+3}, 
+        {"BIMA 7", 3}, {"BIMA 8", 3} 
+    }; 
+    while (true) { 
+        int initialOption; 
+        cout << "Selamat datang di Rumah Sakit Online!\n"; 
+        cout << "1. Masukkan data pasien\n"; 
+        cout << "2. Cari ruangan yang terisi\n"; 
+        cout << "3. Cari ruangan yang kosong\n"; 
+        cout << "4. Urutkan ruangan berdasarkan harga kamar\n"; 
+        cout << "5. Keluar\n"; 
+        cout << "Pilih opsi (1-5): "; 
+ cin >> initialOption; 
+ 
+        if (initialOption == 5) { 
+            cout << "Keluar dari program.\n"; 
+            break; 
+        } 
+ 
+        switch (initialOption) { 
+            case 1: { 
+                int jl, jp, kelas, namaruangan, noruangan, jmlhari, nopenyakit, bayar; 
+                int totalkamar, totalpenyakit, totalsemua, kembalian; 
+ 
+                cout << "JENIS LAYANAN (1. Rawat Inap, 2. Rawat Jalan): "; 
+                cin >> jl; 
+                cout << "JENIS PASIEN (1. Biasa, 2. Asuransi): "; 
+                cin >> jp; 
+ if (jl == 1 && (jp == 1 || jp == 2)) { 
+                    cout << "\nPILIH KELAS : 1. REGULER\n"; 
+                    cout << "            : 2. VIP\n"; 
+                    cout << "            : 3. VVIP\n"; 
+                    cout << "MASUKAN SALAH SATU: "; 
+                    cin >> kelas; 
+ 
+                    if (kelas == 1 || kelas == 2 || kelas == 3) { 
+                        cout << "\nRUANG YANG TERSEDIA : 1. FLAMBOYAN 1-8\n"; 
+                        cout << "                     : 2. ARJUNA 1-8\n"; 
+                        cout << "                     : 3. BIMA 1-8\n"; 
+                        cout << "PILIH NAMA RUANGAN : "; 
+                        cin >> namaruangan; 
+                        cout << "MASUKAN NOMER RUANGAN : "; 
+                        cin >> noruangan; 
+           cout << "JUMLAH HARI MENGINAP : "; 
+                        cin >> jmlhari; 
+                        totalkamar = calculateRoomCost(kelas, jmlhari); 
+                        cout << "TOTAL HARGA KAMAR : " << totalkamar << endl; 
+ 
+                        cout << "\nJENIS PENYAKIT : 1. RINGAN (Rp0-100.000)\n"; 
+                        cout << "               : 2. SEDANG (Rp100.000-400.000)\n"; 
+                        cout << "               : 3. BERAT (Rp500.000-dst)\n"; 
+                        cout << "MASUKAN NOMOR JENIS PENYAKIT : "; 
+                        cin >> nopenyakit;  
+ 
+                        totalpenyakit = calculateDiseaseCost(nopenyakit); 
+                        cout << "TOTAL HARGA PENYAKIT : " << totalpenyakit << endl; 
+ 
+                        // Simulasi pengisian ruangan 
+                        rooms[(namaruangan - 1) + (8 * (kelas - 1))].occupyRoom("Penyakit " + 
+to_string(nopenyakit), totalkamar); 
+ 
+                        cout << "\n=============================================\n"; 
+                        totalsemua = totalkamar + totalpenyakit; 
+                        cout << "JUMLAH KESELURUHAN : " << totalsemua << endl; 
+ 
+                        if (jp == 1) { // Regular patient 
+                            cout << "UANG YANG DI BAYARKAN :"; 
+                            cin >> bayar; 
+                            kembalian = bayar - totalsemua; 
+                            cout << "KEMBALIAN : " << kembalian << endl; 
+                        } else { // Insurance patient 
+                            cout << "Karena Anda menggunakan asuransi, semua biaya gratis.\n";
+         } 
+                    } 
+                } 
+                break; 
+            } 
+            case 2: 
+                searchRoomOccupancy(rooms); 
+                break; 
+            case 3: 
+                searchEmptyRooms(rooms); 
+                break; 
+            case 4: 
+                sortRoomsByCost(rooms); 
+                cout << "Ruangan telah diurutkan berdasarkan harga kamar.\n"; 
+                displayOccupiedRooms(rooms); // Display sorted rooms 
+                break; 
+            default: 
+                cout << "Pilihan tidak valid. Silakan coba lagi.\n"; 
+                break; 
+        } 
+    } 
+ 
+    return 0; 
+}
